@@ -1,0 +1,16 @@
+{
+  "name": "dropship",
+  "version": "1.0.0",
+  "private": true,
+  "workspaces": [
+    "apps/*",
+    "api"
+  ],
+  "scripts": {
+    "dev:api": "npm run dev --workspace=api",
+    "dev:frontend": "npm run dev --workspace=dropship-frontend",
+    "build:api": "npm run build --workspace=api",
+    "build:frontend": "npm run build --workspace=dropship-frontend",
+    "build": "npm run build:api && npm run build:frontend"
+  }
+}
