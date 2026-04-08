@@ -47,6 +47,13 @@ export class CustomerDataBuilder {
     return this
   }
 
+  withUniqueEmail(prefix = 'qa.customer'): CustomerDataBuilder {
+    const now = Date.now()
+    const random = Math.floor(Math.random() * 100_000)
+    this.data.email = `${prefix}.${now}.${random}@example.com`
+    return this
+  }
+
   withPassword(password: string): CustomerDataBuilder {
     this.data.password = password
     return this
@@ -78,6 +85,25 @@ export class CustomerDataBuilder {
   withBillingSameAsShipping(): CustomerDataBuilder {
     this.data.billingAddress = { ...this.data.shippingAddress }
     return this
+  }
+
+  asAlexCarter(): CustomerDataBuilder {
+    return this.withName('Alex Carter')
+      .withEmail('alex.retail@example.com')
+      .withPassword('P@ssword123')
+      .withPhone('+1 (555) 111-2222')
+      .withShippingAddress({
+        street: '742 Evergreen Terrace',
+        city: 'Springfield',
+        state: 'IL',
+        postalCode: '62704',
+        country: 'USA',
+      })
+      .withBillingSameAsShipping()
+  }
+
+  static validCustomer(): CustomerDataBuilder {
+    return new CustomerDataBuilder().asAlexCarter()
   }
 
   build(): CustomerDetails {

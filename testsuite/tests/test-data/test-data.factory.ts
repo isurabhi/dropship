@@ -1,4 +1,5 @@
 import { CustomerDataBuilder } from './customer-data.builder'
+import { CustomerSearchDataBuilder } from './customer-search-data.builder'
 
 export class TestDataFactory {
   static newCustomer(): CustomerDataBuilder {
@@ -7,26 +8,11 @@ export class TestDataFactory {
 
   static alexCarterCustomer() {
     return this.newCustomer()
-      .withName('Alex Carter')
-      .withEmail('alex.retail@example.com')
-      .withPassword('P@ssword123')
-      .withPhone('+1 (555) 111-2222')
-      .withShippingAddress({
-        street: '742 Evergreen Terrace',
-        city: 'Springfield',
-        state: 'IL',
-        postalCode: '62704',
-        country: 'USA',
-      })
-      .withBillingSameAsShipping()
+      .asAlexCarter()
       .build()
   }
 
   static customerSearchByAiden() {
-    return {
-      query: 'Aiden',
-      expectedName: 'Aiden Brooks',
-      expectedRowCount: 1,
-    }
+    return new CustomerSearchDataBuilder().asAidenSearch().build()
   }
 }

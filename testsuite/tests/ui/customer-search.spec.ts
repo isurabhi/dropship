@@ -1,9 +1,9 @@
 import { expect, test } from '@playwright/test'
-import { TestDataFactory } from '../test-data/test-data.factory'
+import { CustomerSearchDataBuilder } from '../test-data/customer-search-data.builder'
 
 test.describe('Customer search', () => {
   test('returns rows when searching by name Aiden', async ({ page }) => {
-    const searchData = TestDataFactory.customerSearchByAiden()
+    const searchData = new CustomerSearchDataBuilder().asAidenSearch().build()
 
     await page.goto('/customers')
 
