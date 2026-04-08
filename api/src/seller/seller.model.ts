@@ -3,6 +3,7 @@ import mongoose, { Schema, type Document } from 'mongoose';
 export interface ISeller extends Document {
   name: string;
   email: string;
+  password: string;
   phone: string;
   businessName: string;
   address: {
@@ -21,6 +22,7 @@ const SellerSchema = new Schema<ISeller>(
   {
     name: { type: String, required: true },
     email: { type: String, required: true, unique: true },
+    password: { type: String, required: true, select: false },
     phone: { type: String, required: true },
     businessName: { type: String, required: true },
     address: {

@@ -1,5 +1,6 @@
 import { SellerModel, type ISeller } from './seller.model';
 import type { CreateSellerInput, UpdateSellerInput } from './seller.router';
+import { hash } from 'bcryptjs';
 
 export class SellerService {
   async getAll(): Promise<ISeller[]> {
@@ -11,11 +12,16 @@ export class SellerService {
   }
 
   async create(data: CreateSellerInput): Promise<ISeller> {
-    return SellerModel.create(data);
+    const password = await hash(data.password, 10);
+    return SellerModel.create({ ...data, password });
   }
 
   async update(id: string, data: UpdateSellerInput): Promise<ISeller | null> {
-    return SellerModel.findByIdAndUpdate(id, data, { new: true });
+    const payload: UpdateSellerInput = { ...data };
+    if (data.password) {
+      payload.password = await hash(data.password, 10);
+    }
+    return SellerModel.findByIdAndUpdate(id, payload, { new: true });
   }
 
   async deleteById(id: string): Promise<ISeller | null> {

@@ -11,6 +11,7 @@ export interface IAddress {
 export interface ICustomer extends Document {
   name: string;
   email: string;
+  password: string;
   phone: string;
   shippingAddress: IAddress;
   billingAddress: IAddress;
@@ -30,6 +31,7 @@ const CustomerSchema = new Schema<ICustomer>(
   {
     name: { type: String, required: true },
     email: { type: String, required: true, unique: true },
+    password: { type: String, required: true, select: false },
     phone: { type: String, required: true },
     shippingAddress: { type: AddressSchema, required: true },
     billingAddress: { type: AddressSchema, required: true },

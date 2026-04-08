@@ -12,6 +12,7 @@ const VendorAddressSchema = z.object({
 const CreateVendorSchema = z.object({
   name: z.string().min(1),
   email: z.string().email(),
+  password: z.string().min(8),
   phone: z.string().min(1),
   address: VendorAddressSchema,
   serviceAreas: z.array(z.string()).default([]),

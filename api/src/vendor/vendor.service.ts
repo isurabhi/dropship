@@ -1,5 +1,6 @@
 import { VendorModel, type IVendor } from './vendor.model';
 import type { CreateVendorInput, UpdateVendorInput } from './vendor.router';
+import { hash } from 'bcryptjs';
 
 export class VendorService {
   async getAll(): Promise<IVendor[]> {
@@ -11,11 +12,16 @@ export class VendorService {
   }
 
   async create(data: CreateVendorInput): Promise<IVendor> {
-    return VendorModel.create(data);
+    const password = await hash(data.password, 10);
+    return VendorModel.create({ ...data, password });
   }
 
   async update(id: string, data: UpdateVendorInput): Promise<IVendor | null> {
-    return VendorModel.findByIdAndUpdate(id, data, { new: true });
+    const payload: UpdateVendorInput = { ...data };
+    if (data.password) {
+      payload.password = await hash(data.password, 10);
+    }
+    return VendorModel.findByIdAndUpdate(id, payload, { new: true });
   }
 
   async deleteById(id: string): Promise<IVendor | null> {

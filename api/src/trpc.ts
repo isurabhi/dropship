@@ -4,6 +4,7 @@ import { CustomerService } from './customer/customer.service';
 import { VendorService } from './vendor/vendor.service';
 import { SellerService } from './seller/seller.service';
 import { ShipmentService } from './shipment/shipment.service';
+import { AuthService } from './auth/auth.service';
 
 export const createContext = (_opts: CreateExpressContextOptions) => {
   return {
@@ -11,6 +12,7 @@ export const createContext = (_opts: CreateExpressContextOptions) => {
     vendorService: new VendorService(),
     sellerService: new SellerService(),
     shipmentService: new ShipmentService(),
+    authService: new AuthService(),
   };
 };
 

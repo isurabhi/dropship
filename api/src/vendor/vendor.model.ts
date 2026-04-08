@@ -11,6 +11,7 @@ export interface IVendorAddress {
 export interface IVendor extends Document {
   name: string;
   email: string;
+  password: string;
   phone: string;
   address: IVendorAddress;
   serviceAreas: string[];
@@ -31,6 +32,7 @@ const VendorSchema = new Schema<IVendor>(
   {
     name: { type: String, required: true },
     email: { type: String, required: true, unique: true },
+    password: { type: String, required: true, select: false },
     phone: { type: String, required: true },
     address: { type: VendorAddressSchema, required: true },
     serviceAreas: [{ type: String }],

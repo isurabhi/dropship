@@ -5,6 +5,7 @@ import dotenv from 'dotenv';
 import { connectDB } from './db';
 import { appRouter } from './router';
 import { createContext } from './trpc';
+import { CustomerService } from './customer/customer.service';
 
 dotenv.config();
 
@@ -24,6 +25,34 @@ app.use(
 
 app.get('/health', (_req, res) => {
   res.json({ status: 'ok' });
+});
+
+app.post('/customers', async (req, res) => {
+  try {
+    const customerService = new CustomerService();
+    const customer = await customerService.create(req.body);
+    res.status(201).json({
+      id: customer._id,
+      name: customer.name,
+      email: customer.email,
+      phone: customer.phone,
+      shippingAddress: customer.shippingAddress,
+      billingAddress: customer.billingAddress,
+      createdAt: customer.createdAt,
+    });
+  } catch (error) {
+    if (
+      typeof error === 'object' &&
+      error !== null &&
+      'code' in error &&
+      (error as { code?: unknown }).code === 11000
+    ) {
+      res.status(409).json({ message: 'Customer with this email already exists.' });
+      return;
+    }
+
+    res.status(400).json({ message: 'Invalid customer payload.' });
+  }
 });
 
 const start = async (): Promise<void> => {

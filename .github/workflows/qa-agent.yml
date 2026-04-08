@@ -1,0 +1,72 @@
+name: QA Agent
+
+on:
+  workflow_dispatch:
+    inputs:
+      test_scope:
+        description: "Test scope to run"
+        required: false
+        default: "all"
+        type: choice
+        options:
+          - all
+          - api
+          - ui
+  pull_request:
+    branches: ["main"]
+  push:
+    branches: ["main"]
+
+jobs:
+  qa-agent:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+          cache: npm
+          cache-dependency-path: |
+            package-lock.json
+            testsuite/package-lock.json
+            api/package-lock.json
+            web/package-lock.json
+
+      - name: Install root deps
+        run: npm ci
+
+      - name: Install testsuite deps
+        run: npm ci
+        working-directory: testsuite
+
+      - name: Install Playwright browsers
+        run: npx playwright install --with-deps
+        working-directory: testsuite
+
+      - name: Run tests skill
+        env:
+          TEST_SCOPE: ${{ github.event.inputs.test_scope || 'all' }}
+        run: ./.github/skills/run-tests/run-tests.sh
+
+      - name: Generate coverage report skill
+        run: ./.github/skills/generate-coverage-report/coverage.sh
+
+      - name: Upload QA coverage artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: qa-coverage
+          path: testsuite/coverage
+
+      - name: Validate health endpoint skill
+        env:
+          API_URL: http://localhost:4000/health
+          EXPECTED_STATUS: "200"
+          EXPECTED_CONTAINS: '"status":"ok"'
+        run: |
+          echo "Health endpoint validation is provided for reusable QA checks."
+          echo "Start the API server before enabling this step in CI."
+          # ./.github/skills/validate-api-response/validate-api.sh
